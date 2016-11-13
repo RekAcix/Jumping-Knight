@@ -24,17 +24,17 @@ var mainState = {
 
 	create: function() {
 		game.physics.startSystem(Phaser.Physics.ARCADE)
-		game.world.setBounds(0, 0, 800, 800);
+		game.world.setBounds(0, 0, 800, 10000);
 
 
 
-
-		this.background = game.add.tileSprite(0, 0, 800, 800, 'background');
+		game.world.backgroundcolor = '#FFFFFF';
+		this.background = game.add.tileSprite(0, 0, 800, 10000, 'background');
 
 
 		game.time.desiredFps = 60;
 
-		this.player = game.add.sprite(250, 250, 'player');
+		this.player = game.add.sprite(250, 9800, 'player');
 
 		//Fizyka do ciala
 		game.physics.arcade.enable(this.player);
@@ -142,7 +142,7 @@ var mainState = {
 
 		let position = -320+this.player.y;
 		game.world.setBounds(0, position, 800, 800);
-		this.background.y = game.world.y;
+
 
 
 
@@ -200,7 +200,7 @@ var mainState = {
 			y = y-100
 			for (var i = 0; i < tilesNeeded; i++) {
 				if (i != hole && i != hole + 1) {
-					this.addTile(hole * this.tileWidth, y+800);
+					this.addTile(hole * this.tileWidth, y+9950);
 				}
 			}
 
