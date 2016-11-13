@@ -34,7 +34,7 @@ var mainState = {
 
 		game.time.desiredFps = 60;
 
-		this.player = game.add.sprite(250, 9800, 'player');
+		this.player = game.add.sprite(250, 9400, 'player');
 
 		//Fizyka do ciala
 		game.physics.arcade.enable(this.player);
@@ -182,7 +182,7 @@ var mainState = {
     },
     addFloor: function(){
         for(var i = 0; i < game.world.width; i+=180)
-            this.addOnePipe(i, game.world.height);
+            this.addOnePipe(i, game.world.height - 400);
     },
 
 		createplatform: function() {
@@ -200,7 +200,7 @@ var mainState = {
 			y = y-100
 			for (var i = 0; i < tilesNeeded; i++) {
 				if (i != hole && i != hole + 1) {
-					this.addTile(hole * this.tileWidth, y+9950);
+					this.addTile(hole * this.tileWidth, y+9600);
 				}
 			}
 
