@@ -12,7 +12,7 @@ var mainState = {
 		game.load.spritesheet('player', 'assets/playerspritesheet.png', 54, 88);
 
 		var player;
-		var facing = 'left';
+		var facing = 'right';
 		var jumpTimer = 0;
 		var cursors;
 		var jumpButton;
@@ -28,6 +28,7 @@ var mainState = {
 
 
 
+
 		this.background = game.add.tileSprite(0, 0, 800, 800, 'background');
 
 
@@ -37,10 +38,10 @@ var mainState = {
 
 		//Fizyka do ciala
 		game.physics.arcade.enable(this.player);
-		game.physics.arcade.gravity.y = 250;
+		game.physics.arcade.gravity.y = 700;
 		game.physics.enable(this.player, Phaser.Physics.ARCADE);
 
-		this.player.body.bounce.y = 0.2;
+		this.player.body.bounce.y = 0.0;
 
 		this.tileWidth = this.game.cache.getImage('platform').width;
 		this.tileHeight = this.game.cache.getImage('platform').height;
@@ -57,7 +58,7 @@ var mainState = {
 		this.addTile();
 
 		//shitty thing, triggers platform
-		this.timer = game.time.events.loop(1000, this.createplatform, this);
+		this.timer = game.time.events.loop(500, this.createplatform, this);
 
 
 		cursors = game.input.keyboard.createCursorKeys();
@@ -99,7 +100,7 @@ var mainState = {
 
 		this.player.body.velocity.x = 0
 		if (cursors.left.isDown) {
-			this.player.body.velocity.x = -225;
+			this.player.body.velocity.x = -400;
 
 			if (this.facing != 'left') {
 				this.player.animations.play('left');
@@ -107,7 +108,7 @@ var mainState = {
 			}
 		}
 		else if (cursors.right.isDown) {
-			this.player.body.velocity.x = 225;
+			this.player.body.velocity.x = 400;
 
 			if (facing != 'right') {
 				this.player.animations.play('right');
@@ -119,10 +120,10 @@ var mainState = {
 				this.player.animations.stop();
 
 				if (facing == 'left') {
-					this.player.frame = 0;
+					this.player.frame = 3;
 				}
 				else {
-					this.player.frame = 5;
+					this.player.frame = 0;
 				}
 
 				facing = 'idle';
@@ -143,9 +144,7 @@ var mainState = {
 		game.world.setBounds(0, position, 800, 800);
 		this.background.y = game.world.y;
 
-		if (this.player.body.velocity.y < -10) {
-			this.player.animations.play('jump');
-		}
+
 
 
 
@@ -163,7 +162,8 @@ var mainState = {
 
 
 	jump: function() {
-	this.player.body.velocity.y = -350;
+	this.player.body.velocity.y = -650;
+	this.player.animations.play('jump');
 	},
 
 
