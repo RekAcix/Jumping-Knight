@@ -9,32 +9,30 @@ var mainState = {
 		game.load.image('2', 'aseets/animation/2.png');
 		game.load.image('3', 'assets/animation/3.png');
 		game.load.image('playerl', 'assets/animation/playerl.png');
-		game.load.spritesheet('player', 'assets/playerspritesheet.png', 54, 88);
+		game.load.spritesheet('player', 'assets/playerspritesheet.png', 55, 88, 4);
 
 		var player;
-		var facing = 'right';
+		var facing;
 		var jumpTimer = 0;
 		var cursors;
 		var jumpButton;
 		var bg;
 		var platformheight = 200;
 		var field;
-		var scoreText
+		var scoreText;
+		this.score = 0;
 	},
 
 	create: function() {
 		game.physics.startSystem(Phaser.Physics.ARCADE)
 		game.world.setBounds(0, 0, 800, 10000);
-
-
-
 		game.world.backgroundcolor = '#FFFFFF';
 		this.background = game.add.tileSprite(0, 0, 800, 10000, 'background');
-
 
 		game.time.desiredFps = 60;
 
 		this.player = game.add.sprite(250, 9400, 'player');
+		this.player.frame = 0;
 
 		//Fizyka do ciala
 		game.physics.arcade.enable(this.player);
@@ -73,28 +71,36 @@ var mainState = {
 		this.platforms = game.add.group();
 		this.platforms.enableBody = true;
 
-
-
-
-
 		this.addFloor();
-
-
 		this.createplatform();
 
-
 		game.camera.follow(this.player);
-
 		game.world.wrap(this.player,0,true,true,false);
 
 		//animations
-		this.player.animations.add('jump', [0, 1, 2], 10, false);
+
+		this.player.animations.add('jump', [3, 1, 2], 10, false);
 		this.player.animations.add('left', [0, 3], 10, false);
 		this.player.animations.add('right', [0], 10, false);
+
+		facing = 'right';
 
 	},
 
 	update: function() {
+
+		game.physics.arcade.collide(this.player, this.platforms);
+		game.world.wrap(this.player, 0, true, true, false);
+		game.physics.arcade.collide(this.player, this.platform);
+
+		let hitPlatform = game.physics.arcade.collide(this.player, this.platforms);
+		let hitFloor = game.physics.arcade.collide(this.player, this.floor);
+
+		//skakanie na gruncie
+		if (jumpButton.isDown && this.player.body.touching.down) {
+			this.jump();
+			this.jumpTimer = game.time.now + 750;
+		};
 
 		// game.physics.arcade.collide(player, layer);
 
@@ -103,7 +109,7 @@ var mainState = {
 			this.player.body.velocity.x = -400;
 
 			if (this.facing != 'left') {
-				this.player.animations.play('left');
+				this.player.frame = 3;
 				facing = 'left';
 			}
 		}
@@ -111,59 +117,26 @@ var mainState = {
 			this.player.body.velocity.x = 400;
 
 			if (facing != 'right') {
-				this.player.animations.play('right');
+				this.player.frame = 0;
 				facing = 'right';
 			}
 		}
-		else {
-			if (facing = 'idle') {
-				this.player.animations.stop();
 
-				if (facing == 'left') {
-					this.player.frame = 3;
-				}
-				else {
-					this.player.frame = 0;
-				}
 
-				facing = 'idle';
-			}
-		}
-		game.physics.arcade.collide(this.player, this.platforms);
-		game.world.wrap(this.player, 0, true, true, false);
-		game.physics.arcade.collide(this.player, this.platform);
-
-		let hitPlatform = game.physics.arcade.collide(this.player, this.platforms);
-		let hitFloor = game.physics.arcade.collide(this.player, this.floor);
 
 		//makiki script
 		game.camera.y = this.player.y-320
-
 
 		let position = -320+this.player.y;
 		game.world.setBounds(0, position, 800, 800);
 
 
-
-
-
-
-
-
-
-
-		//skakanie na gruncie
-
-		if (jumpButton.isDown && this.player.body.touching.down) {
-			this.jump();
-			this.jumpTimer = game.time.now + 750;
-		}
 	},
 
 
 	jump: function() {
-	this.player.body.velocity.y = -650;
-	this.player.animations.play('jump');
+		this.player.body.velocity.y = -650;
+		this.player.animations.play('jump');
 	},
 
 
@@ -194,8 +167,6 @@ var mainState = {
 			var tilesNeeded = Math.ceil(this.game.world.width / this.tileWidth);
 			var hole = Math.floor(Math.random() * (tilesNeeded - 3)) + 1;
 
-
-
 			//Might edit this:
 			y = y-100
 			for (var i = 0; i < tilesNeeded; i++) {
@@ -203,8 +174,6 @@ var mainState = {
 					this.addTile(hole * this.tileWidth, y+9600);
 				}
 			}
-
-
 
 		},
 
@@ -220,6 +189,8 @@ var mainState = {
 
 			tile.checkWorldBounds = true;
 			tile.outOfBoundsKill = true;
+
+			this.score++;
 
 		},
 
